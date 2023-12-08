@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+  
+{% block body %}
+
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Quick Example</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form method="post" action="{{ url_for('logistic_predict') }}">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age">
+                  </div>
+                  <div class="form-group">
+                    <label for="hypertension">Have history of Hypertension?</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="hypertension" id="hypertensionYes" value="1" required checked>
+                      <label class="form-check-label" for="hypertensionYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="hypertension" id="hypertensionNo" value="0" required>
+                      <label class="form-check-label" for="hypertensionNo">No</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="heartdisease">Have history of any Heart Diseases?</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="heartdisease" id="heartdiseaseYes" value="1" required checked>
+                      <label class="form-check-label" for="heartdiseaseYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="heartdisease" id="heartdiseaseNo" value="0" required>
+                      <label class="form-check-label" for="heartdiseaseNo">No</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="glucose">Average Glucose Level</label>
+                    <input type="number" step="0.1" class="form-control" id="glucose" name="glucose" placeholder="Enter your glucose level">
+                  </div>
+                  <div class="form-group">
+                    <label for="bmi">Body Mass Index</label>
+                    <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" placeholder="Enter your BMI">
+                  </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary text-right">Submit</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+
+{% endblock %}
