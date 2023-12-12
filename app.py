@@ -3,19 +3,19 @@ from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 import re
 import pickle
-from models import db, Users
+from models import db, Users, Stroke, Cholesterol
 
-# Load the trained model and scaler from their pickle files
+# Load the trained model from their pickle files
 with open('static/ml_models/logistic_regression.pkl', 'rb') as file:
-    model = pickle.load(file)
+    lo_model = pickle.load(file)
 
 with open('static/ml_models/linear_regression.pkl', 'rb') as file:
-    model = pickle.load(file)
+    li_model = pickle.load(file)
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'ml-models-webapp'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost/ml-models'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost/ml_models'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 bcrypt = Bcrypt(app) 
@@ -85,15 +85,12 @@ def login():
 
 @app.route("/dashboard", methods =['GET', 'POST'])
 def dashboard():
-    if 'loggedin' in session:        
-        return render_template("dashboard.html")
-    return redirect(url_for('login'))
+    if 'loggedin' in session:
+        # Fetch all rows from the DB table
+        strokes = Stroke.query.all()
+        cholesterols = Cholesterol.query.all()
 
-@app.route('/logout')
-def logout():
-    session.pop('loggedin', None)
-    session.pop('userid', None)
-    session.pop('email', None)
+        return render_template("dashboard.html", name=session['name'], strokes=strokes, cholesterols=cholesterols)
     return redirect(url_for('login'))
 
 # Prediction functions and routes
@@ -115,13 +112,17 @@ def logistic_predict():
             BMI = float(request.form['bmi'])
 
             # Store the inputs to the model then predict
-            prediction = model.predict([[Age, Hypertension, Heart_Disease, Glucose, BMI]])
+            lo_prediction = lo_model.predict([[Age, Hypertension, Heart_Disease, Glucose, BMI]])
             
-            # For Checking the output
-            # print(prediction)
+            # Create a new instance of Stroke for db storing
+            stroke_data_entry = Stroke(age=Age, hypertension=Hypertension, heart_disease=Heart_Disease, glucose=Glucose, bmi=BMI, stroke=lo_prediction[0])
+
+            # Add the new entry to the database
+            db.session.add(stroke_data_entry)
+            db.session.commit()
 
             # Check if the prediction is 1 or 0
-            if prediction[0] == 1:
+            if lo_prediction[0] == 1:
                 return render_template('/predict/logistic.html', prediction_text='The patient will likely to have stroke 😟')
             else:
                 return render_template('/predict/logistic.html', prediction_text='The patient will not likely to have stroke 😃')
@@ -146,13 +147,33 @@ def linear_predict():
             Glucose = float(request.form['glucose'])
 
             # Store the inputs to the model then predict
-            prediction = model.predict([[Age, SysBP, DiaBP, BMI, HeartRate, Glucose]])
+            li_prediction = li_model.predict([[Age, SysBP, DiaBP, BMI, HeartRate, Glucose]])
             
-            # Print output
-            # print(prediction)
+            # Create a new instance of Cholesterol for db storing
+            cholesterol_data_entry = Cholesterol(age=Age, sys_bp=SysBP, dia_bp=DiaBP, bmi=BMI, heart_rate=HeartRate, glucose=Glucose, tot_chol=li_prediction[0])
 
-            return render_template('/predict/linear.html', prediction_text='The total cholesterol of the patient is {:.2f}'.format(prediction[0]))
+            # Add the new entry to the database
+            db.session.add(cholesterol_data_entry)
+            db.session.commit()
+
+            return render_template('/predict/linear.html', prediction_text='The total cholesterol of the patient is {:.2f}'.format(li_prediction[0]))
         return redirect(url_for('linear'))
+
+# Visualization
+@app.route("/visualize", methods =['GET', 'POST'])
+def visualize():
+    if 'loggedin' in session:
+        
+                
+        return render_template("visualize.html")
+    return redirect(url_for('login'))
+
+@app.route('/logout')
+def logout():
+    session.pop('loggedin', None)
+    session.pop('userid', None)
+    session.pop('email', None)
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Dashboard</title>
+  <title>What's Up eDuck?</title>
+  <link rel="icon" href="{{ url_for('static',filename='img/AdminLTELogo.png') }}">
  
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -15,6 +16,10 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <!-- iCheck -->
   <link rel="stylesheet" href="{{ url_for('static',filename='plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ url_for('static',filename='css/adminlte.min.css') }}">
 </head>
@@ -23,7 +28,7 @@
     
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__shake" src="{{ url_for('static',filename='img/AdminLTELogo.png') }}" alt="AdminLTELogo" height="60" width="60">
+        <img class="animation__shake" src="{{ url_for('static',filename='img/AdminLTELogo.png') }}" alt="AdminLTELogo" height="150" width="150">
     </div>
     
     <!-- Navbar -->
@@ -35,9 +40,6 @@
         </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a href="{{ url_for('dashboard') }}" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Contact</a>
         </li>
         </ul>
     
@@ -71,9 +73,8 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="{{ url_for('dashboard') }}" class="brand-link">
-        <img src="{{ url_for('static',filename='img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <a href="{{ url_for('dashboard') }}" class="brand-link justify-content-center"><h3 class="brand-text font-weight-normal ">What's up eDuck?</h3>
+        <!-- <img src="{{ url_for('static',filename='img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
         </a>
     
         <!-- Sidebar -->
@@ -81,10 +82,14 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-            <img src="{{ url_for('static',filename='img/avatar4.png') }}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ url_for('static',filename='img/doc_avatar.jpg') }}" class="img-circle elevation-2" alt="User Image">
             </div>
-            <div class="info">
-            <a href="#" class="d-block">{{session.name}}</a>
+            <div class="info ">
+            <a href="#" class="d-block">
+                {% if session['name'] %}
+                    {{ session['name'] }}
+                {% endif %}
+            </a>
             </div>
         </div>
     
@@ -107,23 +112,31 @@
                 with font-awesome or any other icon font library -->
             <li class="nav-item">
                 <a href="{{ url_for('dashboard') }}" class="nav-link">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <i class="nav-icon fas fa-table"></i>
                 <p>
                     Dashboard
                 </p>
                 </a>
             </li>
-            <li class="nav-item menu-open">
+            <li class="nav-item">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <i class="nav-icon fas fa-chart-pie"></i>
+                <p>
+                    Data Visualize
+                </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-cogs"></i>
                   <p>
-                    Models
+                    ML Models
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                        <a href="{{ url_for('logistic') }}" class="nav-link active">
+                        <a href="{{ url_for('logistic') }}" class="nav-link">
                           <i class="far fa-circle nav-icon"></i>
                           <p>Logistic Regression</p>
                         </a>
@@ -135,7 +148,7 @@
                         </a>
                       </li>
                 </ul>
-              </li>
+            </li>
             <li class="nav-item">
                 <a href="{{ url_for('logout') }}" class="nav-link">
                 <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -177,33 +190,48 @@
     <script src="{{ url_for('static',filename='plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ url_for('static',filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="{{ url_for('static',filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/jszip/jszip.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+    <!-- ChartJS -->
+    <script src="{{ url_for('static',filename='plugins/chart.js/Chart.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ url_for('static',filename='js/adminlte.min.js') }}"></script>
-    <script>
-    $(document).ready(function(){
-        $('#addBook').click(function(){ 
-        $('#bookModal').modal({
-            backdrop: 'static',
-            keyboard: false
-        });       
-        $("#bookModal").on("shown.bs.modal", function () {
-            $('#bookForm')[0].reset();              
-            $('.modal-title').html("<i class='fa fa-plus'></i> Add book");                  
-            $('#action').val('addBook');
-            $('#save').val('Save');
-        });
-        });     
-    });
-    </script>
     <script>
         {% if prediction_text %}
             Swal.fire({
                 title: 'Prediction Result',
                 text: '{{ prediction_text }}',
                 icon: 'info',
-                confirmButtonText: 'Okay, e-Doc!'
+                confirmButtonText: 'Okay, e-Duck!'
             })
         {% endif %}
-    </script>    
+    </script>
+    <script>
+        $(function () {
+          $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false, "order": [[ 0, "desc" ]],
+            "buttons": ["copy", "csv", "excel", "pdf"]
+          }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
+    </script>
+    <script>
+            $(function () {
+              $("#example2").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false, "order": [[ 0, "desc" ]],
+                "buttons": ["copy", "csv", "excel", "pdf"]
+              }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+            });
+    </script>
 </body>
 </html>

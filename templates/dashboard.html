@@ -22,72 +22,101 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
- 
-                <p>Total Books</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Cleaned Data on Stroke - Classification Dataset</h3>
           </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
- 
-                <p>Available Books</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table id="example1" class="table table-bordered table-hover">
+              <thead>
+              <tr>
+                <th>ID Number</th>
+                <th>Age</th>
+                <th>Hypertension</th>
+                <th>Heart Disease</th>
+                <th>Glucose Level</th>
+                <th>BMI</th>
+                <th>Stroke</th>
+              </tr>
+              </thead>
+              <tbody>
+                {% for stroke in strokes %}
+                <tr>
+                    <td>{{ stroke.id }}</td>
+                    <td>{{ stroke.age }}</td>
+                    <td>
+                      {% if stroke.hypertension == 1 %}
+                        Yes
+                      {% else %}
+                        No
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if stroke.heart_disease == 1 %}
+                        Yes
+                      {% else %}
+                        No
+                      {% endif %}
+                    </td>
+                    <td>{{ stroke.glucose }}</td>
+                    <td>{{ stroke.bmi }}</td>
+                    <td>
+                      {% if stroke.stroke == 1 %}
+                        Yes
+                      {% else %}
+                        No
+                      {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+              </tbody>
+            </table>
           </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>44</h3>
- 
-                <p>Returned Books</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
- 
-                <p>Issued Books</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
+          <!-- /.card-body -->
         </div>
-        <!-- /.row -->
-         
-        <!-- /.row (main row) -->
+        <!-- /.card -->
+      </div><!-- /.container-fluid -->
+
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Cleaned Data on Cholesterol - Regression Dataset</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table id="example2" class="table table-bordered table-hover">
+              <thead>
+              <tr>
+                <th>ID Number</th>
+                <th>Age</th>
+                <th>Systolic BP</th>
+                <th>Diastolic BP</th>
+                <th>BMI</th>
+                <th>Heart Rate</th>
+                <th>Glucose Level</th>
+                <th>Total Cholesterol</th>
+              </tr>
+              </thead>
+              <tbody>
+                {% for cholesterol in cholesterols %}
+                <tr>
+                    <td>{{ cholesterol.id }}</td>
+                    <td>{{ cholesterol.age }}</td>
+                    <td>{{ cholesterol.sys_bp }}</td>
+                    <td>{{ cholesterol.dia_bp }}</td>
+                    <td>{{ cholesterol.bmi }}</td>
+                    <td>{{ cholesterol.heart_rate }}</td>
+                    <td>{{ cholesterol.glucose }}</td>
+                    <td>{{ cholesterol.tot_chol }}</td>
+                </tr>
+            {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
