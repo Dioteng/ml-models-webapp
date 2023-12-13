@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>What's Up eDuck?</title>
+  <title>What's Up e-Duck?</title>
   <link rel="icon" href="{{ url_for('static',filename='img/AdminLTELogo.png') }}">
  
   <!-- Google Font: Source Sans Pro -->
@@ -73,7 +73,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="{{ url_for('dashboard') }}" class="brand-link justify-content-center"><h3 class="brand-text font-weight-normal ">What's up eDuck?</h3>
+        <a href="{{ url_for('dashboard') }}" class="brand-link justify-content-center"><h3 class="brand-text font-weight-normal ">What's up e-Duck?</h3>
         <!-- <img src="{{ url_for('static',filename='img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
         </a>
     
@@ -119,7 +119,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                <a href="{{ url_for('visualize') }}" class="nav-link">
                 <i class="nav-icon fas fa-chart-pie"></i>
                 <p>
                     Data Visualize
@@ -232,6 +232,94 @@
                 "buttons": ["copy", "csv", "excel", "pdf"]
               }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
             });
+    </script>
+    <script>
+        {% if ages is defined and strokeCounts is defined and noStrokeCounts is defined %}
+            var ages = {{ ages|tojson|safe }};
+            var strokeCounts = {{ strokeCounts|tojson|safe }};
+            var noStrokeCounts = {{ noStrokeCounts|tojson|safe }};
+
+            var ctx = document.getElementById('stackedBarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ages,
+                    datasets: [{
+                        label: 'No Stroke',
+                        data: noStrokeCounts,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Had Stroke',
+                        data: strokeCounts,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: true
+                        }
+                    }
+                }
+            });
+        {% endif %}
+    </script>
+    <script>
+        {% if ages is defined and glucose_data is defined and cholesterol_data is defined %}
+            var ages = {{ ages|tojson|safe }};
+            var glucose_data = {{ glucose_data|tojson|safe }};
+            var cholesterol_data = {{ cholesterol_data|tojson|safe }};
+    
+            var ctx = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ages,
+                    datasets: [{
+                        label: 'Glucose Level',
+                        data: glucose_data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }, {
+                        label: 'Cholesterol Level',
+                        data: cholesterol_data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Age'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Level'
+                            }
+                        }
+                    }
+                }
+            });
+        {% endif %}
     </script>
 </body>
 </html>

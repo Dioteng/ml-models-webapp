@@ -163,9 +163,38 @@ def linear_predict():
 @app.route("/visualize", methods =['GET', 'POST'])
 def visualize():
     if 'loggedin' in session:
-        
-                
-        return render_template("visualize.html")
+        # Fetch all data from the stroke and cholesterol tables
+        stroke_data = Stroke.query.all()
+        cholesterol_data_db = Cholesterol.query.all()
+
+        # Process the data into the format needed for the bar chart
+        age_bins = ["0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"]
+        strokeCounts = [0]*10
+        noStrokeCounts = [0]*10
+        for item in stroke_data:
+            # Determine which age bin this item belongs to
+            bin_index = min(item.age // 10, 9)  # Ensure that ages 100 and above fall into the last bin
+            if item.stroke == 1:
+                strokeCounts[bin_index] += 1
+            else:
+                noStrokeCounts[bin_index] += 1
+
+        # Process the data into the format needed for the line chart
+        glucose_data = [[] for _ in range(10)]
+        cholesterol_data = [[] for _ in range(10)]
+        for item in cholesterol_data_db:
+            if not isinstance(item, list):
+                # Determine which age bin this item belongs to
+                bin_index = min(item.age // 10, 9)  # Ensure that ages 100 and above fall into the last bin
+                glucose_data[bin_index].append(item.glucose)
+                cholesterol_data[bin_index].append(item.tot_chol)
+
+        # Calculate the average glucose and cholesterol levels for each age bin
+        glucose_data = [sum(g) / len(g) if g else 0 for g in glucose_data]
+        cholesterol_data = [sum(c) / len(c) if c else 0 for c in cholesterol_data]
+
+        # Pass the data to the template
+        return render_template("visualize.html", ages=age_bins, strokeCounts=strokeCounts, noStrokeCounts=noStrokeCounts, glucose_data=glucose_data, cholesterol_data=cholesterol_data)
     return redirect(url_for('login'))
 
 @app.route('/logout')
